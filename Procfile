@@ -1,1 +1,1 @@
-web: gunicorn MIRPITY.wsgi --log-file -
+web: gunicorn twtproj.wsgi --log-file -

@@ -18,15 +18,21 @@ for mention in tweepy.Paginator(client.get_users_mentions,
                                 id = id_string,
                                 expansions = 'author_id',
                                 user_fields = 'username',
-                                start_time = '2021-01-01T00:00:00Z',
+                                start_time = '2021-11-01T00:00:00Z',
                                 end_time = '2021-12-15T00:00:00Z',
                                 max_results = 30):
     mentions.append(mention)
+    
+tweet_ids = []
+for page in mentions:
+    for tweetid in page.data:
+        tweet_ids.append(tweetid.id)
 
 usernames = []
-for page in mentions:
-    for user in page.includes['users']:
-        usernames.append(user.data['username'])
+for tweetid in tweet_ids:
+    dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
+    wub = dub.includes['users']
+    usernames.append(wub[0].username)
 
 user_dict = {}
 for user in usernames:

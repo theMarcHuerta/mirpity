@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Python Button Script
+        </title>
+        <meta name="description" content="twitter 2021 mentions recap tool">
+        <meta name="keywords" content="twitter 2021 mentions recap tool">
+    </head>
+    <h1>Your Twitter 2021 Mentions!</h1>
+    <h3>See who has replyed to your tweets the most over the course of this year!</h3>
+    <h3>Just put your username (i.e. themarchuerta) <br>
+        below in the textbox and wait for the code to run!<br>
+        It'll return the '@' of the user and number <br>
+        of times they replyed to you in 2021!</h3>
+    <body>
+        Because there's no way to parse through private account tweets, <br>
+        this tool will only work for public accounts.<br>
+        By this I mean only public accounts can get access to <br>
+        who has replied to them and only public account will <br>
+        appear as people who've replied to them. Sorry about that!!<br>
+        <br>
+        You can optionally quickly go public, run the tool,<br>
+         and then go back to private tho!
+        <br><br>
+        Tool made by @themarchuerta on Twitter :)
+        {% if data %}
+
+        {{data}}
+
+        {% endif %}
+
+        <form action="/external/" method="post">
+            {% csrf_token %}
+            Enter Your Twitter Username Here without the '@':
+            <input type="text" name="param" required><br><br>
+            <input type="submit" value="Click Here To Run The Code!">
+            {{data_external}}<br><br>
+            {{data1|safe}}
+            <br><br>
+        </form>
+
+    </body>
+</html>

@@ -14,7 +14,8 @@ def output(request):
 
 def external(request):
     inp = request.POST.get('param')
-    out = run([sys.executable,'//Users//ironmacbookair//Desktop//twtproj//twtproj//twt_code.py', inp], shell=False, stdout=PIPE)
+#     out = run([sys.executable,'//Users//ironmacbookair//Desktop//twtproj//twtproj//twt_code.py', inp], shell=False, stdout=PIPE)
+    out = run([sys.executable,'//theMarcHuerta//mirpity//twtproj//twt_code.py', inp], shell=False, stdout=PIPE)
     rout = str(out.stdout) + "HELLO"
     return render(request, 'home.html', {'data1':rout})
 

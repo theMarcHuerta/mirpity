@@ -3,6 +3,11 @@ import requests
 import sys
 from subprocess import run,PIPE
 
+import tweepy
+import time
+import pandas as pd
+import sys
+
 def button(request):
     return render(request, 'home.html')
 
@@ -14,8 +19,51 @@ def output(request):
 
 def external(request):
     inp = request.POST.get('param')
-#     out = run([sys.executable,'//Users//ironmacbookair//Desktop//twtproj//twtproj//twt_code.py', inp], shell=False, stdout=PIPE)
-    out = run([sys.executable,'//twt_code.py', inp], shell=False, stdout=PIPE)
-    rout = str(out.stdout) + "HELLO"
-    return render(request, 'home.html', {'data1':rout})
 
+    bearer_token="AAAAAAAAAAAAAAAAAAAAAOLPWwEAAAAAiZGe1iL8ZXtfkhy8WR%2BL7DXafdM%3DL4smFywUxepOzFj3OuVbJXoerMIjHtluhlImwK6Nko2bwxqJ3Y"
+
+    client = tweepy.Client(bearer_token, wait_on_rate_limit=True)
+
+    user_2_lookup = inp
+
+    user_id_main = []
+    user_id_main.append(client.get_user(id=None, username=user_2_lookup, user_auth=False, expansions=None, tweet_fields=None, user_fields=None))
+    id_string = str(user_id_main[0].data['id'])
+
+
+    mentions = []
+    for mention in tweepy.Paginator(client.get_users_mentions,
+                                    id = id_string,
+                                    expansions = 'author_id',
+                                    user_fields = 'username',
+                                    start_time = '2021-01-01T00:00:00Z',
+                                    end_time = '2021-12-17T04:00:00Z',
+                                    max_results = 50):
+        mentions.append(mention)
+
+    tweet_ids = []
+    for page in mentions:
+        for tweetid in page.data:
+            tweet_ids.append(tweetid.id)
+
+    usernames = []
+    for tweetid in tweet_ids:
+        dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
+        wub = dub.includes['users']
+        usernames.append(wub[0].username)
+
+    user_dict = {}
+    for user in usernames:
+        if user not in user_dict:
+            user_dict[user] = 0
+        user_dict[user] += 1
+
+    tupled_names = [(k, v) for k, v in user_dict.items()]
+    top_folk = sorted(tupled_names, key = lambda x: x[1], reverse=True)
+    top_folk[:10]
+
+    out_string = ""
+    for i in range(10):
+        out_string = out_string + "@" + str(top_folk[i][0]) + "is ranked " + str(i+1) + " amongst people who've replied to your tweets this year.<br><br>They replied to your tweets " + str(top_folk[i][1]) + " times<br><br><br><br>"
+
+    return render(request, 'home.html', {'data1':out_string})

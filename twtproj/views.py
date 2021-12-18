@@ -31,29 +31,48 @@ def external(request):
     id_string = str(user_id_main[0].data['id'])
 
 
-    mentions = []
+    username_list = []
     for mention in tweepy.Paginator(client.get_users_mentions,
                                     id = id_string,
                                     expansions = 'author_id',
                                     user_fields = 'username',
                                     start_time = '2021-01-01T00:00:00Z',
                                     end_time = '2021-12-17T04:00:00Z',
-                                    max_results = 50):
-        mentions.append(mention)
-
-    tweet_ids = []
-    for page in mentions:
-        for tweetid in page.data:
-            tweet_ids.append(tweetid.id)
-
-    usernames = []
-    for tweetid in tweet_ids:
-        dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
-        wub = dub.includes['users']
-        usernames.append(wub[0].username)
+                                    max_results = 5):
+        print(mention.includes)
+        print(mention.meta['result_count'])
+        if ((mention.meta['result_count'])==0):
+            break
+        templist = mention.includes['users']
+        user_num = len(templist)
+        print(user_num)
+        if (user_num == 5):
+            for usernum in mention.includes['users']:
+                username_list.append(usernum.username)           
+        if (user_num == 4):
+            tweet_ids = []
+            for tweetid in mention.data:
+                tweet_ids.append(tweetid.id)
+            for tweetid in tweet_ids:
+                dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
+                wub = dub.includes['users']
+                username_list.append(wub[0].username)         
+        if (user_num == 3):
+            for usernum in mention.includes['users']:
+                for i in range(2):
+                    username_list.append(usernum.username)
+        if (user_num == 2):
+            for usernum in mention.includes['users']:
+                for i in range(2):
+                    username_list.append(usernum.username)
+        if (user_num == 1):
+            for usernum in mention.includes['users']:
+                for i in range(5):
+                    username_list.append(usernum.username)
+    
 
     user_dict = {}
-    for user in usernames:
+    for user in username_list:
         if user not in user_dict:
             user_dict[user] = 0
         user_dict[user] += 1
@@ -62,7 +81,7 @@ def external(request):
     top_folk = sorted(tupled_names, key = lambda x: x[1], reverse=True)
     top_folk[:10]
 
-    out_string = ""
+    out_string = "@" + user_2_lookup + "these are your top 10 people who've replied to your tweets the most in 2021!<br><br>"
     for i in range(10):
         out_string = out_string + "@" + str(top_folk[i][0]) + "is ranked " + str(i+1) + " amongst people who've replied to your tweets this year.<br><br>They replied to your tweets " + str(top_folk[i][1]) + " times<br><br><br><br>"
 

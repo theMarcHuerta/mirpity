@@ -59,9 +59,9 @@ def external(request):
                     dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
                     wub = dub.includes['users']
                     username_list.append(wub[0].username)
-        else:
-            for usernum in mention.includes['users']:
-                username_list.append(usernum.username)        
+            else:
+                for usernum in mention.includes['users']:
+                    username_list.append(usernum.username)        
         if (user_num == 3):
             for usernum in mention.includes['users']:
                 for i in range(2):
@@ -86,8 +86,8 @@ def external(request):
     top_folk = sorted(tupled_names, key = lambda x: x[1], reverse=True)
     top_folk[:10]
 
-    out_string = "@" + user_2_lookup + "these are your top 10 people who've replied to your tweets the most in 2021!<br><br>"
+    out_string = "@" + user_2_lookup + " these are your top 10 people who've replied to your tweets the most in 2021!<br><br>"
     for i in range(10):
-        out_string = out_string + "@" + str(top_folk[i][0]) + "is ranked " + str(i+1) + " amongst people who've replied to your tweets this year.<br><br>They replied to your tweets " + str(top_folk[i][1]) + " times<br><br><br><br>"
+        out_string = out_string + "@" + str(top_folk[i][0]) + " is ranked " + str(i+1) + " amongst people who've replied to your tweets this year.<br><br>They replied to your tweets " + str(top_folk[i][1]) + " times<br><br><br><br>"
 
     return render(request, 'home.html', {'data1':out_string})

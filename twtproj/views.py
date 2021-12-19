@@ -39,24 +39,27 @@ def external(request):
                                     start_time = '2021-01-01T00:00:00Z',
                                     end_time = '2021-12-17T04:00:00Z',
                                     max_results = 5):
-        print(mention.includes)
-        print(mention.meta['result_count'])
+        
         if ((mention.meta['result_count'])==0):
             break
         templist = mention.includes['users']
         user_num = len(templist)
-        print(user_num)
         if (user_num == 5):
             for usernum in mention.includes['users']:
                 username_list.append(usernum.username)           
         if (user_num == 4):
-            tweet_ids = []
-            for tweetid in mention.data:
-                tweet_ids.append(tweetid.id)
-            for tweetid in tweet_ids:
-                dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
-                wub = dub.includes['users']
-                username_list.append(wub[0].username)         
+            if (total_get_tweet_reqs < 295):
+                tweet_ids = []
+                for tweetid in mention.data:
+                    tweet_ids.append(tweetid.id)
+                for tweetid in tweet_ids:
+                    total_get_tweet_reqs += 1
+                    dub = client.get_tweet(id = tweetid, user_auth=False, expansions = 'author_id', tweet_fields=None, user_fields = 'username')
+                    wub = dub.includes['users']
+                    username_list.append(wub[0].username)
+        else:
+            for usernum in mention.includes['users']:
+                username_list.append(usernum.username)        
         if (user_num == 3):
             for usernum in mention.includes['users']:
                 for i in range(2):

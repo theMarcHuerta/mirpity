@@ -32,6 +32,8 @@ def external(request):
 
 
     username_list = []
+    total_get_user_reqs = 0
+    total_get_tweet_reqs = 0
     for mention in tweepy.Paginator(client.get_users_mentions,
                                     id = id_string,
                                     expansions = 'author_id',

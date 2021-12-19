@@ -48,7 +48,7 @@ def external(request):
             for usernum in mention.includes['users']:
                 username_list.append(usernum.username)           
         if (user_num == 4):
-            if (total_get_tweet_reqs < 295):
+            if (total_get_tweet_reqs < 50):
                 tweet_ids = []
                 for tweetid in mention.data:
                     tweet_ids.append(tweetid.id)

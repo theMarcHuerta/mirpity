@@ -39,7 +39,7 @@ def external(request):
                                     expansions = 'author_id',
                                     user_fields = 'username',
                                     start_time = '2021-01-01T00:00:00Z',
-                                    end_time = '2021-12-17T04:00:00Z',
+                                    end_time = '2021-12-20T00:00:00Z',
                                     max_results = 5):
         
         if ((mention.meta['result_count'])==0):
